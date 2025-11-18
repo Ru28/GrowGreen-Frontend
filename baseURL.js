@@ -1,0 +1,1 @@
+export const BASE_URL= "https://grow-green-backend.vercel.app/api";

@@ -1,0 +1,9 @@
+CREATE INDEX index_name on table_name (column_name);
+
+CREATE INDEX idx_users_email on users (email);
+
+CREATE UNIQUE INDEX idx_users_email_unique on users (email);
+
+CREATE INDEX idx_users_name_age ON users (name,age);
+
+CREATE INDEX idx_users_active on user (email) where is_active = true;
