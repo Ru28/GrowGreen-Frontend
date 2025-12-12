@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import TradeForm from "../components/TradeForm";
 import ActiveTradeTable from "../components/ActiveTradeTable";
 import ClosedTradeTable from "../components/ClosedTradeTable";
+import ReportMatrix from "../components/ReportMatrix";
 import { BASE_URL } from "../../baseURL";
 import { calculateProfitLossPercentage, calculateProfitLossRupees } from "../lib/calculations";
 
@@ -27,7 +28,7 @@ const Index = ()=>{
         .then((tradesData)=>{
             setActiveTrades(tradesData.data.activeTrades);
             setClosedTrade(tradesData.data.closeTrades);
-            setReportData(tradesData.data.reportData);
+            setReportData(tradesData.data.reportData[0]);
         })
         .catch((err)=>console.error("error",err));
     }
@@ -110,6 +111,14 @@ const Index = ()=>{
         
     }
 
+    const handleUpdateReport = async()=>{
+
+    }
+
+    const generateAndDownloadTradeReport = async()=>{
+
+    }
+
     const handleUpdateClosedTrade = (index, updatedTrade,id) =>{
         fetch(`${BASE_URL}/closeTrade/updateCloseTrade/${id}`,{
             method: "PUT",
@@ -157,6 +166,13 @@ const Index = ()=>{
             {/* Main Content  */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="space-y-8">
+                    {/* Metrics and Report Section */}
+                    <ReportMatrix 
+                        tradeReport={reportData}
+                        onUpdateReportData={handleUpdateReport}
+                        generateTradeReport={generateAndDownloadTradeReport}
+                        />
+                    
                     {/* Form Section  */}
                     <TradeForm onAddTrade={handleAddTrades}/>
 
