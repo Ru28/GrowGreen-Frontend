@@ -6,11 +6,8 @@ import { Label } from "./ui/Label";
 
 
 const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
-    const [editMetricsData,setEditMetricsData] = useState({})
+    const [editMetricsData,setEditMetricsData] = useState(tradeReport);
     const [editMetrics, setEditMetrics] = useState(false);
-    useEffect(()=>{
-      setEditMetricsData(tradeReport);
-    },[])
 
     const calculateNiftyChange = (niftyFrom,niftyClose)=> {
       const from = parseFloat(niftyFrom);
@@ -47,10 +44,10 @@ const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
                           setEditMetricsData({ ...editMetricsData, niftyFrom: e.target.value, niftyReturn:niftyReturn })
                         }
                       }
-                      className="border-gray-300"
+                      className="border-gray-300 h-10 text-sm"
                     />
                   ):(
-                    <div className="p-2.5 border border-transparent rounded-md bg-gray-50 text-gray-800 font-medium">
+                    <div className="h-10 flex items-center px-3 border border-transparent rounded-md bg-gray-50 text-gray-800 font-medium">
                       {tradeReport.niftyFrom ? tradeReport.niftyFrom : "Not set"}
                     </div>
                   )}
@@ -73,10 +70,10 @@ const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
                           setEditMetricsData({ ...editMetricsData, niftyClose: e.target.value, niftyReturn: niftyReturn })
                         }
                       }
-                      className="border-gray-300"
+                      className="border-gray-300 h-10 text-sm"
                     />
                   ):(
-                    <div className="p-2.5 border border-transparent rounded-md bg-gray-50 text-gray-800 font-medium">
+                    <div className="h-10 flex items-center px-3 border border-transparent rounded-md bg-gray-50 text-gray-800 font-medium">
                       {tradeReport.niftyClose ? tradeReport.niftyClose : "Not set"}
                     </div>
                   )}
@@ -96,10 +93,10 @@ const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
                     onChange={(e) =>
                       setEditMetricsData({ ...editMetricsData, stopLoss: e.target.value })
                     }
-                    className="border-gray-300"
+                    className="border-gray-300 h-10 text-sm"
                   />
                   ): (
-                    <div className="p-2.5 border border-transparent rounded-md bg-gray-50 text-gray-800 font-medium">
+                    <div className="h-10 flex items-center px-3 border border-transparent rounded-md bg-gray-50 text-gray-800 font-medium">
                       {tradeReport.stopLoss? tradeReport.stopLoss: "N/A"}
                     </div>
                   )}
@@ -124,10 +121,10 @@ const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
                       onChange={(e) =>
                         setEditMetricsData({ ...editMetricsData, investment: e.target.value })
                       }
-                      className="border-gray-300"
+                      className="border-gray-300 h-10 text-sm"
                     />
                   ):(
-                    <div className="p-2.5 border border-transparent rounded-md bg-gray-50 text-gray-800 font-medium">
+                    <div className="h-10 flex items-center px-3 border border-transparent rounded-md bg-gray-50 text-gray-800 font-medium">
                       {tradeReport.investment ? tradeReport.investment : "Not set"}
                     </div>
                   )}
@@ -138,7 +135,7 @@ const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
                   <Label htmlFor="currentValue" className="text-sm font-semibold">
                     Current Value (₹)
                   </Label>
-                  <div className="p-2.5 border border-transparent rounded-md bg-gray-50 text-gray-800 font-medium">
+                  <div className="h-10 flex items-center px-3 border border-transparent rounded-md bg-gray-50 text-gray-800 font-medium">
                     {tradeReport.currentValue? tradeReport.currentValue: 0}
                   </div>
                   
@@ -149,7 +146,7 @@ const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
                   <Label className="text-sm font-semibold">
                     Nifty Return
                   </Label>
-                  <div className="p-2.5 border border-transparent rounded-md bg-gray-50 text-gray-800 font-medium">
+                  <div className="h-10 flex items-center px-3 border border-transparent rounded-md bg-gray-50 text-gray-800 font-medium">
                     {editMetricsData.niftyReturn? editMetricsData.niftyReturn : tradeReport.niftyReturn}
                   </div>
                 </div>
@@ -174,6 +171,7 @@ const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
                         }
                       }
                       setEditMetrics(!editMetrics);
+                      setEditMetricsData(tradeReport);
                     }
                   }
                   variant={editMetrics ? "default": "outline"}
