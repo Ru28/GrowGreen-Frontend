@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card";
 import { Input } from "./ui/Input";
@@ -8,13 +8,16 @@ import { Label } from "./ui/Label";
 const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
     const [editMetricsData,setEditMetricsData] = useState({})
     const [editMetrics, setEditMetrics] = useState(false);
+    useEffect(()=>{
+      setEditMetricsData(tradeReport);
+    },[])
 
-    const calculateNiftyChange = ()=> {
-      const from = parseFloat(tradeReport.niftyFrom);
-      const close = parseFloat(tradeReport.niftyClose);
+    const calculateNiftyChange = (niftyFrom,niftyClose)=> {
+      const from = parseFloat(niftyFrom);
+      const close = parseFloat(niftyClose);
       if(from && close){
         const change = ((close-from)/from)*100;
-        return `${change.toFixed(2)}%`;
+        return change.toFixed(2);
       }
       return "";
     }
@@ -39,8 +42,10 @@ const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
                       type="number"
                       placeholder="e.g., 24450"
                       value={editMetricsData.niftyFrom}
-                      onChange={(e) =>
-                        setEditMetricsData({ ...editMetricsData, niftyFrom: e.target.value })
+                      onChange={(e) =>{
+                          const niftyReturn = calculateNiftyChange(e.target.value,editMetricsData.niftyClose);
+                          setEditMetricsData({ ...editMetricsData, niftyFrom: e.target.value, niftyReturn:niftyReturn })
+                        }
                       }
                       className="border-gray-300"
                     />
@@ -63,8 +68,10 @@ const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
                       type="number"
                       placeholder="e.g., 25722"
                       value={editMetricsData.niftyClose}
-                      onChange={(e) =>
-                        setEditMetricsData({ ...editMetricsData, niftyClose: e.target.value })
+                      onChange={(e) =>{
+                          const niftyReturn = calculateNiftyChange(editMetricsData.niftyFrom,e.target.value);
+                          setEditMetricsData({ ...editMetricsData, niftyClose: e.target.value, niftyReturn: niftyReturn })
+                        }
                       }
                       className="border-gray-300"
                     />
@@ -140,10 +147,10 @@ const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
                 {/* nifty change */}
                 <div className="space-y-2">
                   <Label className="text-sm font-semibold">
-                    Nifty Change
+                    Nifty Return
                   </Label>
                   <div className="p-2.5 border border-transparent rounded-md bg-gray-50 text-gray-800 font-medium">
-                    {calculateNiftyChange() || "N/A"}
+                    {editMetricsData.niftyReturn? editMetricsData.niftyReturn : tradeReport.niftyReturn}
                   </div>
                 </div>
 
@@ -167,7 +174,6 @@ const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
                         }
                       }
                       setEditMetrics(!editMetrics);
-                      setEditMetricsData(tradeReport);
                     }
                   }
                   variant={editMetrics ? "default": "outline"}

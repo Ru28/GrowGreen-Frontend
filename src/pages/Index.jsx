@@ -111,8 +111,19 @@ const Index = ()=>{
         
     }
 
-    const handleUpdateReport = async()=>{
-
+    const handleUpdateReport = async(updatedReportData)=>{
+        const updateReportData = await fetch(`${BASE_URL}/reportData/updateReportData`,{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updatedReportData)
+        }).then(async(res)=> {
+            res.json();
+            await fetchTradesData();
+        }).catch((err)=>{
+            console.error("error occur on update",err.message);
+        })
     }
 
     const generateAndDownloadTradeReport = async()=>{
