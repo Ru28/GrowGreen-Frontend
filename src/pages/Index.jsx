@@ -126,9 +126,79 @@ const Index = ()=>{
         })
     }
 
-    const generateAndDownloadTradeReport = async()=>{
+   const generateAndDownloadTradeReport = async () => {
+        try {
+            // Show loading indicator
+            const loadingEl = document.createElement('div');
+            loadingEl.style.position = 'fixed';
+            loadingEl.style.top = '0';
+            loadingEl.style.left = '0';
+            loadingEl.style.width = '100%';
+            loadingEl.style.background = '#16a34a';
+            loadingEl.style.color = 'white';
+            loadingEl.style.padding = '10px';
+            loadingEl.style.textAlign = 'center';
+            loadingEl.style.zIndex = '9999';
+            loadingEl.textContent = 'Generating PDF report... Please wait.';
+            document.body.appendChild(loadingEl);
 
-    }
+            const response = await fetch(`${BASE_URL}/reportData/download-report`, {
+                method: 'GET',
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Failed to download report: ${response.status} ${response.statusText}`);
+            }
+
+            // Check content type
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/pdf')) {
+                const text = await response.text();
+                console.error('Response is not PDF:', text.substring(0, 200));
+                throw new Error('Server returned non-PDF response');
+            }
+
+            // Get filename from headers or generate
+            const contentDisposition = response.headers.get('content-disposition');
+            let filename = `GrowGreen_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+            
+            if (contentDisposition) {
+                const match = contentDisposition.match(/filename="(.+)"/);
+                if (match) filename = match[1];
+            }
+
+            // Create blob and download
+            const blob = await response.blob();
+            console.log('PDF blob size:', blob.size, 'bytes');
+            
+            if (blob.size < 1000) {
+                throw new Error('PDF file is too small, likely empty or corrupted');
+            }
+
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            // Cleanup
+            setTimeout(() => {
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                document.body.removeChild(loadingEl);
+            }, 100);
+
+        } catch (error) {
+            console.error('Error downloading report:', error);
+            
+            // Remove loading indicator if exists
+            const loadingEl = document.querySelector('div[style*="Generating PDF"]');
+            if (loadingEl) document.body.removeChild(loadingEl);
+            
+            alert(`Failed to download report: ${error.message}`);
+        }
+    };
 
     const handleUpdateClosedTrade = (index, updatedTrade,id) =>{
         fetch(`${BASE_URL}/closeTrade/updateCloseTrade/${id}`,{

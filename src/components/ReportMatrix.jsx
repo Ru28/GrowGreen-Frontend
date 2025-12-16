@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "./ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card";
 import { Input } from "./ui/Input";
@@ -157,7 +157,7 @@ const ReportMatrix = ({tradeReport,onUpdateReportData,generateTradeReport})=>{
               <div className="flex gap-3">
                 <Button
                   onClick={() => {
-                    generateTradeReport(metricsData);
+                    generateTradeReport();
                   }}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
                 >
